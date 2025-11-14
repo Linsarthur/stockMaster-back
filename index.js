@@ -1,5 +1,6 @@
 import express from "express"
-import prisma from "./src/services/index.js";
+import prisma from "./src/commons/prisma/index.js";
+
 
 const app = express();
 const port = 3000;
