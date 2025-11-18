@@ -62,3 +62,26 @@ export const deleteUser = async (req, res) => {
         return res.json(error.message)
     }
 }
+
+export const login = async (req, res) => {
+    const { user_email, user_password } = req.body;
+    try {
+        const user = await prisma.users_table.findFirst({
+            where: {
+                user_email,
+
+            }
+        })
+        if (!user) {
+            return res.status(400).json("Email e/ou senha incorretos! Tente novamente.")
+        }
+        if (!user_password) {
+            return res.status(400).json("Email e/ou senha incorretos! Tente novamente.")
+        }
+        return res.status(200).json("Logado com sucesso")
+    } catch (error) {
+        res.status(500).json(error.message)
+
+    }
+
+}
