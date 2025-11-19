@@ -75,7 +75,7 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(400).json("Email e/ou senha incorretos! Tente novamente.")
         }
-        if (!user_password) {
+        if (user.user_password !== user_password) {
             return res.status(400).json("Email e/ou senha incorretos! Tente novamente.")
         }
         return res.status(200).json("Logado com sucesso")
