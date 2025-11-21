@@ -1,4 +1,10 @@
 import prisma from "../../commons/prisma/index.js"
+import bcrypt from "bcrypt"
+import { randomInt } from "node:crypto"
+
+
+const randomSalt = randomInt(10, 16);
+
 
 export const getUser = async (req, res) => {
     res.send(await prisma.users_table.findMany())
@@ -21,11 +27,19 @@ export const getUserById = async (req, res) => {
     }
 }
 
-export const postUser = async (req, res) => {
-    const data = req.body
+export const createUser = async (req, res) => {
+    const { user_email, user_name, user_password } = req.body
+    const passwordCrypt = await bcrypt.hash(user_password, randomSalt)
+
+
     try {
         await prisma.users_table.create({
-            data: data
+            data: {
+                user_email,
+                user_password: passwordCrypt,
+                user_name
+            }
+
         })
         return res.json("Dado inserido com sucesso!")
     } catch (error) {
@@ -35,13 +49,18 @@ export const postUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const { id } = req.params
-    const data = req.body
+    const { user_email, user_name, user_password } = req.body
+    const passwordCrypt = await bcrypt.hash(user_password, randomSalt)
     try {
         await prisma.users_table.update({
             where: {
                 user_id: Number(id)
             },
-            data: data
+            data: {
+                user_email,
+                user_password: passwordCrypt,
+                user_name
+            }
         })
         return res.json("Dados alterados com sucesso")
     } catch (error) {
@@ -64,7 +83,10 @@ export const deleteUser = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    const { user_email, user_password } = req.body;
+    const { user_email, user_password } = req.body
+    const passwordCrypt = await bcrypt.hash(user_password, randomSalt)
+    const checkedPassword = await bcrypt.compare(user_password, passwordCrypt)
+
     try {
         const user = await prisma.users_table.findFirst({
             where: {
@@ -75,8 +97,9 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(400).json("Email e/ou senha incorretos! Tente novamente.")
         }
-        if (user.user_password !== user_password) {
-            return res.status(400).json("Email e/ou senha incorretos! Tente novamente.")
+        if (!checkedPassword) {
+            return res.status(400).json("Email e/ou senha incorretos! Tente novamente2.")
+
         }
         return res.status(200).json("Logado com sucesso")
     } catch (error) {
