@@ -121,6 +121,6 @@ export const logout = async (req, res) => {
         return res.status(400).json({ error: "Token não informado" })
     }
     const token = authHeader.replace("Bearer ", "");
-    setTimeout(() => delete [token], parseInt(process.env.JWT_EXPIRES) * 1000)
+    setTimeout(() => delete[token], parseInt(process.env.JWT_EXPIRES) * 1000)
     res.json({ token: null })
 }
