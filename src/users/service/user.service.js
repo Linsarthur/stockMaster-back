@@ -86,11 +86,6 @@ export const deleteUser = async (req, res) => {
 export const login = async (req, res) => {
     const { id: user_id } = req.params
     const { user_email, user_password } = req.body
-    const passwordCrypt = await bcrypt.hash(user_password, randomSalt)
-
-    const token = jwt.sign({ user_id }, process.env.JWT_SECRET, {
-        expiresIn: parseInt(process.env.JWT_EXPIRES)
-    })
 
 
     try {
@@ -106,6 +101,9 @@ export const login = async (req, res) => {
         if (!checkedPassword) {
             return res.status(401).json("Email e/ou senha incorretos! Tente novamente2.")
         }
+        const token = jwt.sign({ user_id }, process.env.JWT_SECRET, {
+            expiresIn: parseInt(process.env.JWT_EXPIRES)
+        })
         return res.status(200).json({
             message: "Logado com sucesso",
             token
