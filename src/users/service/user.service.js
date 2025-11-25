@@ -87,7 +87,7 @@ export const login = async (req, res) => {
     const { id: user_id } = req.params
     const { user_email, user_password } = req.body
     const passwordCrypt = await bcrypt.hash(user_password, randomSalt)
-    const checkedPassword = await bcrypt.compare(user_password, passwordCrypt)
+
     const token = jwt.sign({ user_id }, process.env.JWT_SECRET, {
         expiresIn: parseInt(process.env.JWT_EXPIRES)
     })
@@ -99,16 +99,17 @@ export const login = async (req, res) => {
                 user_email,
             }
         })
+        const checkedPassword = await bcrypt.compare(user_password, user.user_password)
         if (!user) {
             return res.status(401).json("Email e/ou senha incorretos! Tente novamente.")
         }
         if (!checkedPassword) {
             return res.status(401).json("Email e/ou senha incorretos! Tente novamente2.")
         }
-
-
-
-        return res.status(200).json({ message: "Logado com sucesso", token })
+        return res.status(200).json({
+            message: "Logado com sucesso",
+            token
+        })
     } catch (error) {
         res.status(500).json(error.message)
     }
@@ -121,6 +122,6 @@ export const logout = async (req, res) => {
         return res.status(400).json({ error: "Token não informado" })
     }
     const token = authHeader.replace("Bearer ", "");
-    setTimeout(() => delete[token], parseInt(process.env.JWT_EXPIRES) * 1000)
+    setTimeout(() => delete [token], parseInt(process.env.JWT_EXPIRES) * 1000)
     res.json({ token: null })
 }
