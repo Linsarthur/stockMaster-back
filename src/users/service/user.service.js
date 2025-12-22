@@ -84,7 +84,7 @@ export const deleteUser = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    const { id: user_id } = req.params
+    console.log("body", req.body)
     const { user_email, user_password } = req.body
 
 
@@ -94,15 +94,15 @@ export const login = async (req, res) => {
                 user_email,
             }
         })
-        const checkedPassword = await bcrypt.compare(user_password, user.user_password)
         if (!user) {
-            return res.status(401).json("Email e/ou senha incorretos! Tente novamente.")
+            return res.status(401).json({ message: "Email e/ou senha incorretos" })
         }
+        const checkedPassword = await bcrypt.compare(user_password, user.user_password)
         if (!checkedPassword) {
-            return res.status(401).json("Email e/ou senha incorretos! Tente novamente2.")
+            return res.status(401).json({ message: "Email e/ou senha incorretos" })
         }
-        const token = jwt.sign({ user_id }, process.env.JWT_SECRET, {
-            expiresIn: parseInt(process.env.JWT_EXPIRES)
+        const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET, {
+            expiresIn: "1h"
         })
         return res.status(200).json({
             message: "Logado com sucesso",

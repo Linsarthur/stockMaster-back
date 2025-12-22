@@ -2,11 +2,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// prisma/schema.prisma
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
 }
-
 model users_table {
   user_id       Int     @id @default(autoincrement())
   user_name     String  @db.VarChar(100)
