@@ -4,13 +4,13 @@ import verifyJWT from "../../middlewares/token/jsonWebToken.js";
 
 const router = Router();
 
-router.get("/", getUser)
-router.get("/:id", getUserById)
-router.post("/", createUser)
+router.get("/", verifyJWT, getUser)
+router.get("/:id", verifyJWT, getUserById)
+router.post("/", verifyJWT, createUser)
 router.post("/login", login)
 router.post("/logout", verifyJWT, logout)
-router.put("/:id", updateUser)
-router.delete("/:id", deleteUser)
+router.put("/:id", verifyJWT, updateUser)
+router.delete("/:id", verifyJWT, deleteUser)
 
 
 

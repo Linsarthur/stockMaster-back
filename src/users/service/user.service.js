@@ -84,7 +84,6 @@ export const deleteUser = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    console.log("body", req.body)
     const { user_email, user_password } = req.body
 
 

@@ -2,10 +2,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// prisma/schema.prisma
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
 model users_table {
   user_id       Int     @id @default(autoincrement())
   user_name     String  @db.VarChar(100)
@@ -13,4 +14,51 @@ model users_table {
   user_phone    String? @unique @db.VarChar(255)
   user_cpf      String? @unique @db.VarChar(255)
   user_password String  @db.VarChar(255)
+  roles         roles[]
+}
+
+model batch {
+  batch_id      Int             @id @default(autoincrement())
+  batch_number  Int
+  batchproducts batchproducts[]
+}
+
+model products {
+  product_id       Int             @id @default(autoincrement())
+  product_name     String
+  product_price    Int
+  product_discount Int?
+  category_idfk    Int
+  batchproducts    batchproducts[]
+  categoryRelation       categories      @relation(fields: [category_idfk], references: [category_id], map: "fk_category")
+
+  @@index([category_idfk], map: "idx_products_category")
+}
+
+model roles {
+  role_id        Int         @id @default(autoincrement())
+  role_permisson String      @db.VarChar(255)
+  user_id        Int
+  user           users_table @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_user")
+
+  @@index([user_id], map: "idx_roles_user")
+}
+
+model categories {
+  category_id          Int        @id @default(autoincrement())
+  category_name        String
+  category_description String
+  products             products[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model batchproducts {
+  batch_idfk   Int
+  product_idfk Int
+  batch        batch    @relation(fields: [batch_idfk], references: [batch_id], onDelete: Cascade, map: "fk_batch")
+  products     products @relation(fields: [product_idfk], references: [product_id], onDelete: Cascade, map: "fk_product")
+
+  @@id([batch_idfk, product_idfk])
+  @@index([batch_idfk], map: "idx_batchproducts_batch")
+  @@index([product_idfk], map: "idx_batchproducts_product")
 }
