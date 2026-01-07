@@ -20,15 +20,17 @@
   },
   "homepage": "https://github.com/Linsarthur/stockMaster-back#readme",
   "dependencies": {
-    "@prisma/client": "^6.19.0",
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "^5.22.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
-    "prisma": "^6.19.0"
+    "prisma": "^5.22.0"
   }
 }

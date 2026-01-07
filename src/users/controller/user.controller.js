@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/", verifyJWT, getUser)
 router.get("/:id", verifyJWT, getUserById)
-router.post("/", verifyJWT, createUser)
+router.post("/", createUser)
 router.post("/login", login)
 router.post("/logout", verifyJWT, logout)
 router.put("/:id", verifyJWT, updateUser)

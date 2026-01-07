@@ -19,18 +19,18 @@ model users_table {
 
 model batch {
   batch_id      Int             @id @default(autoincrement())
-  batch_number  Int
+  batch_number  Int             @unique
   batchproducts batchproducts[]
 }
 
 model products {
   product_id       Int             @id @default(autoincrement())
   product_name     String
-  product_price    Int
-  product_discount Int?
+  product_price    Decimal         @db.Decimal(10, 2)
+  product_discount Decimal?        @db.Decimal(5, 2)
   category_idfk    Int
   batchproducts    batchproducts[]
-  categoryRelation       categories      @relation(fields: [category_idfk], references: [category_id], map: "fk_category")
+  category         categories      @relation(fields: [category_idfk], references: [category_id], map: "fk_category")
 
   @@index([category_idfk], map: "idx_products_category")
 }
@@ -51,12 +51,11 @@ model categories {
   products             products[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model batchproducts {
   batch_idfk   Int
   product_idfk Int
   batch        batch    @relation(fields: [batch_idfk], references: [batch_id], onDelete: Cascade, map: "fk_batch")
-  products     products @relation(fields: [product_idfk], references: [product_id], onDelete: Cascade, map: "fk_product")
+  product      products @relation(fields: [product_idfk], references: [product_id], onDelete: Cascade, map: "fk_product")
 
   @@id([batch_idfk, product_idfk])
   @@index([batch_idfk], map: "idx_batchproducts_batch")
