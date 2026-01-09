@@ -5,4 +5,4 @@ const router = Router()
 
 router.post("/create", createProduct)
 
-export { router as productsRoute }
+export { router as productsRoutes }

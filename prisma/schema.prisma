@@ -36,10 +36,10 @@ model products {
 }
 
 model roles {
-  role_id        Int         @id @default(autoincrement())
-  role_permisson String      @db.VarChar(255)
-  user_id        Int
-  user           users_table @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_user")
+  role_id        Int          @id @default(autoincrement())
+  role_permisson String       @db.VarChar(255)
+  user_id        Int?
+  user           users_table? @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_user")
 
   @@index([user_id], map: "idx_roles_user")
 }

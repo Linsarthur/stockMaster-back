@@ -8,4 +8,4 @@ router.get("/", callBatch)
 router.put("/update/:id", editBatch)
 router.delete("/delete/:id", deleteBatch)
 
-export { router as batchRouter }
+export { router as batchRoutes }

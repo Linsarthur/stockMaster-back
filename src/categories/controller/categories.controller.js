@@ -8,4 +8,4 @@ router.get("/", callCategories)
 router.put("/update/:id", editCategories)
 router.delete("/delete/:id", deleteCategories)
 
-export { router as categoryRouter }
+export { router as categoryRoutes }
