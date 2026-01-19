@@ -29,7 +29,7 @@ export const getUserById = async (req, res) => {
 }
 
 export const createUser = async (req, res) => {
-    const { user_email, user_name, user_password } = req.body
+    const { user_email, user_name, user_password, user_role } = req.body
     const passwordCrypt = await bcrypt.hash(user_password, randomSalt)
 
 
@@ -38,7 +38,8 @@ export const createUser = async (req, res) => {
             data: {
                 user_email,
                 user_password: passwordCrypt,
-                user_name
+                user_name,
+                user_role
             }
 
         })
@@ -50,7 +51,7 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const { id } = req.params
-    const { user_email, user_name, user_password } = req.body
+    const { user_email, user_name, user_password, user_role} = req.body
     const passwordCrypt = await bcrypt.hash(user_password, randomSalt)
     try {
         await prisma.users_table.update({
@@ -60,7 +61,8 @@ export const updateUser = async (req, res) => {
             data: {
                 user_email,
                 user_password: passwordCrypt,
-                user_name
+                user_name,
+                user_role
             }
         })
         return res.json("Dados alterados com sucesso")

@@ -5,13 +5,7 @@ export const createBatch = async (req, res) => {
     try {
         const batchProducts = await prisma.batch.create({
             data: {
-                batch_number,
-                batchproducts: {
-                    create: batchproducts
-                }
-            },
-            include: {
-                batchproducts: true
+                batch_number
             }
         })
         res.json({ batchProducts })

@@ -8,40 +8,34 @@ datasource db {
 }
 
 model users_table {
-  user_id       Int     @id @default(autoincrement())
-  user_name     String  @db.VarChar(100)
-  user_email    String  @unique @db.VarChar(255)
-  user_phone    String? @unique @db.VarChar(255)
-  user_cpf      String? @unique @db.VarChar(255)
-  user_password String  @db.VarChar(255)
-  roles         roles[]
+  user_id       Int      @id @default(autoincrement())
+  user_name     String   @db.VarChar(100)
+  user_email    String   @unique @db.VarChar(255)
+  user_phone    String?  @unique @db.VarChar(255)
+  user_cpf      String?  @unique @db.VarChar(255)
+  user_password String   @db.VarChar(255)
+  user_role     UserRole @default(MANAGER)
 }
 
 model batch {
-  batch_id      Int             @id @default(autoincrement())
-  batch_number  Int             @unique
-  batchproducts batchproducts[]
+  batch_id     Int        @id @default(autoincrement())
+  batch_number Int        @unique
+  products     products[]
 }
 
 model products {
-  product_id       Int             @id @default(autoincrement())
+  product_id       Int        @id @default(autoincrement())
   product_name     String
-  product_price    Decimal         @db.Decimal(10, 2)
-  product_discount Decimal?        @db.Decimal(5, 2)
+  product_price    Decimal    @db.Decimal(10, 2)
+  product_discount Decimal?   @db.Decimal(5, 2)
+  product_amount   Int
+  batch_idfk       Int
+  batch            batch      @relation(fields: [batch_idfk], references: [batch_id], onDelete: Cascade)
   category_idfk    Int
-  batchproducts    batchproducts[]
-  category         categories      @relation(fields: [category_idfk], references: [category_id], map: "fk_category")
+  category         categories @relation(fields: [category_idfk], references: [category_id], onDelete: Cascade)
 
-  @@index([category_idfk], map: "idx_products_category")
-}
-
-model roles {
-  role_id        Int          @id @default(autoincrement())
-  role_permisson String       @db.VarChar(255)
-  user_id        Int?
-  user           users_table? @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "fk_user")
-
-  @@index([user_id], map: "idx_roles_user")
+  @@index([batch_idfk])
+  @@index([category_idfk])
 }
 
 model categories {
@@ -51,13 +45,8 @@ model categories {
   products             products[]
 }
 
-model batchproducts {
-  batch_idfk   Int
-  product_idfk Int
-  batch        batch    @relation(fields: [batch_idfk], references: [batch_id], onDelete: Cascade, map: "fk_batch")
-  product      products @relation(fields: [product_idfk], references: [product_id], onDelete: Cascade, map: "fk_product")
-
-  @@id([batch_idfk, product_idfk])
-  @@index([batch_idfk], map: "idx_batchproducts_batch")
-  @@index([product_idfk], map: "idx_batchproducts_product")
+enum UserRole {
+  ADMIN
+  MANAGER
+  EMPLOYEE
 }
