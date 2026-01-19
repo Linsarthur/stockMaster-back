@@ -26,13 +26,13 @@ model batch {
 model products {
   product_id       Int        @id @default(autoincrement())
   product_name     String
-  product_price    Decimal    @db.Decimal(10, 2)
+  product_price    Decimal?    @db.Decimal(10, 2)
   product_discount Decimal?   @db.Decimal(5, 2)
   product_amount   Int
-  batch_idfk       Int
-  batch            batch      @relation(fields: [batch_idfk], references: [batch_id], onDelete: Cascade)
-  category_idfk    Int
-  category         categories @relation(fields: [category_idfk], references: [category_id], onDelete: Cascade)
+  batch_idfk       Int?
+  batch            batch?      @relation(fields: [batch_idfk], references: [batch_id], onDelete: Cascade)
+  category_idfk    Int?
+  category         categories? @relation(fields: [category_idfk], references: [category_id], onDelete: Cascade)
 
   @@index([batch_idfk])
   @@index([category_idfk])

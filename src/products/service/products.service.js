@@ -7,11 +7,13 @@ export const createProduct = async (req, res) => {
         const newProduct = await prisma.products.create({
             data: {
                 product_name,
-                product_amount,
+                product_amount: parseInt(product_amount),
                 product_price: parseFloat(product_price),
                 product_discount: product_discount ? parseFloat(product_discount) : null,
                 category_idfk,
-                batch_idfk
+                batch: {
+                    connect: { batch_id: batch_idfk }  // ← Conecta ao batch existente
+                }
             }
         })
         return res.json({
@@ -42,5 +44,30 @@ export const getOnlyOneProduct = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({ message: "Não achei", errorMessage: error.message })
+    }
+}
+
+
+export const getAllProdutcts = async (req, res) => {
+    try {
+        const response = await prisma.products.findMany()
+        res.status(200).json(response)
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
+}
+
+
+export const deleteOneProduct = async (req, res) => {
+    const { id } = req.params
+    try {
+        const response = await prisma.products.delete({
+            where: {
+                product_id: Number(id)
+            }
+        })
+        res.status(200).json({ message: "Produto removido com sucesso", response })
+    } catch (error) {
+
     }
 }
